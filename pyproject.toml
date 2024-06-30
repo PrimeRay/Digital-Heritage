@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "elderly-time-management"
+version = "0.1.0"
+description = ""
+authors = ["Ray <optimusprimeray@hotmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+flask = "^3.0.3"
+requests = "^2.32.3"
+python-dotenv = "^1.0.1"
+google-generativeai = "^0.7.1"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
