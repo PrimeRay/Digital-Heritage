@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>老年人时间管理助手</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        textarea { width: 100%; height: 100px; }
+        #events { margin-top: 20px; }
+        #advice { margin-top: 20px; background-color: #f0f0f0; padding: 10px; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>老年人时间管理助手</h1>
+    <h2>记录生活</h2>
+    <textarea id="eventText" placeholder="请输入您的活动，例如：今天下午3点和老王在公园下棋"></textarea>
+    <button onclick="addEvent()">记录</button>
+    <p id="status"></p>
+    
+    <h2>最近活动</h2>
+    <div id="events"></div>
+    
+    <h2>养生建议</h2>
+    <div id="advice"></div>
+
+    <script>
+    async function addEvent() {
+        const text = document.getElementById('eventText').value;
+        const statusElement = document.getElementById('status');
+        statusElement.textContent = '正在记录...';
+        statusElement.className = '';
+        try {
+            const response = await axios.post('/events', { text });
+            document.getElementById('eventText').value = '';
+            statusElement.textContent = '记录成功！';
+            statusElement.className = 'success';
+            fetchEvents();
+            fetchAdvice();
+        } catch (error) {
+            console.error('Error adding event:', error);
+            statusElement.textContent = '记录失败: ' + (error.response?.data?.error || error.message);
+            statusElement.className = 'error';
+        }
+    }
+
+    async function fetchEvents() {
+        try {
+            const response = await axios.get('/events');
+            const eventsHtml = response.data.map(event => 
+                `<p>${event.title} - ${new Date(event.event_time).toLocaleString()}</p>`
+            ).join('');
+            document.getElementById('events').innerHTML = eventsHtml || '暂无记录';
+        } catch (error) {
+            console.error('Error fetching events:', error);
+            document.getElementById('events').innerHTML = '<p class="error">获取活动失败: ' + (error.response?.data?.error || error.message) + '</p>';
+        }
+    }
+
+    async function fetchAdvice() {
+        try {
+            const response = await axios.get('/health_advice');
+            document.getElementById('advice').innerHTML = response.data.advice || '暂无建议';
+        } catch (error) {
+            console.error('Error fetching advice:', error);
+            document.getElementById('advice').innerHTML = '<p class="error">获取建议失败: ' + (error.response?.data?.error || error.message) + '</p>';
+        }
+    }
+
+    fetchEvents();
+    fetchAdvice();
+    </script>
+</body>
+</html>

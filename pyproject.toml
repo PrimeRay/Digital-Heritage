@@ -1,22 +1,25 @@
 [tool.poetry]
-name = "elderly-time-management"
+name = "elderly-time-manager"
 version = "0.1.0"
-description = ""
+description = "一款针对老年人的时间管理应用"
 authors = ["Ray <optimusprimeray@hotmail.com>"]
-readme = "README.md"
+packages = [
+    { include = "app" },
+]
+include = ["README.md", "wsgi.py", "init_db.py", "run.py"]
 
 [tool.poetry.dependencies]
 python = "^3.12"
 flask = "^3.0.3"
-requests = "^2.32.3"
-python-dotenv = "^1.0.1"
+psycopg2-binary = "^2.9.9"
 google-generativeai = "^0.7.1"
+python-dotenv = "^1.0.1"
+flask-sqlalchemy = "^3.1.1"
 
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.2.2"
+[tool.poetry.scripts]
+start = "run:main"
+init_db = "init_db:main"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
